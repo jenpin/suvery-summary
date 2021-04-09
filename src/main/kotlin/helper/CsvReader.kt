@@ -12,6 +12,10 @@ class CsvReader (val resultCruncher: ResultCruncher) {
             .map { it.trim().split(",") }
             .map { header.zip(it).toMap() }
             .forEach {
+                println(it.get("type") + " " + it.get("text"))
+                if(it.get("type").isNullOrBlank() || it.get("text").isNullOrBlank())
+                    throw Exception ("A Question and its type is mandatory")
+
                 resultCruncher.addQuestion(Question(it.get("type")!!, it.get("text")!!))
             }
     }
@@ -24,12 +28,11 @@ class CsvReader (val resultCruncher: ResultCruncher) {
             resultCruncher.addParticipant(
                 Participant(
                     it[0],
-                    it[1].toInt(),
+                    it[1],
                     !it[2].isNullOrBlank(),
                     it.subList(3, it.size).toMutableList()
                 )
             )
-            println(ResultCruncher.getParticipants().size)
         }
     }
 
@@ -52,12 +55,14 @@ class CsvReader (val resultCruncher: ResultCruncher) {
 
 fun main(args: Array<String>) {
     for (arg in args) {
-        println(arg)
-        try { CsvReader(ResultCruncher).readFile(arg) }
+        try {
+            CsvReader(ResultCruncher).readFile(arg)
+        }
         catch (e: Exception){
             println("Something went wrong!! "+ e.message)
         }
     }
+    ResultCruncher.beginProcessing()
 }
 
 
