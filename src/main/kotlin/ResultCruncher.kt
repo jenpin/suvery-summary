@@ -10,6 +10,7 @@ object ResultCruncher {
     val questionToSubmittedAnswers: MutableMap<Question, MutableList<String>> = mutableMapOf()
 
     private fun populateQuestionAnswerMap(){
+        if(questions.isEmpty()) return
         questions.forEach {
             questionToSubmittedAnswers.put(it, mutableListOf<String>())
         }

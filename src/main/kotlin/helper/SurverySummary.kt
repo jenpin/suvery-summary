@@ -3,43 +3,37 @@ package helper
 import ResultCruncher
 import model.Question
 import model.SurveySummaryResult
-import java.text.DecimalFormat
 
 
 class SurverySummary(val resultCruncher: ResultCruncher){
-
-    private fun isRatingOnlyQuestion(question : Question) = question.type.equals("ratingquestion")
     val questionAvg : MutableMap<String,Double> = mutableMapOf()
 
+    private fun isRatingOnlyQuestion(question : Question) = question.type.equals("ratingquestion")
 
-    private fun calculateParticipationPercentage(): Double {
-        val diff =  resultCruncher.getSubmittedEntries()
-        val value = diff / resultCruncher.getTotalUniqueEntries().toDouble()
-        return value * 100.toDouble()
+    private fun populateSurveySummaryResult(totalEntries: Int) = SurveySummaryResult(
+        totalEntries,
+        calculateParticipationPercentage(resultCruncher.getSubmittedEntries().toDouble(),totalEntries.toDouble()),
+        questionAvg).printResult()
+
+     fun calculateParticipationPercentage(submittedEntries: Double, totalEntries: Double): Double {
+         if(totalEntries != 0.0){
+             val value = submittedEntries / totalEntries
+             return value * 100
+         }
+       return 0.0
     }
 
-
-    private fun calculateAvgRatingPerQuestion(){
-        val questionToAnswers = resultCruncher.questionToSubmittedAnswers
-        questionToAnswers.keys.forEach {
-
-            if(isRatingOnlyQuestion(it)){
-                val avg  =  if(questionToAnswers.get(it)?.size!! > 0 ) {
-                    questionToAnswers.get(it)?.map{it.toInt()}?.average()
-                }
-                 else 0.0
-                questionAvg.put(it.text,avg!!)
+    fun calculateAvgRatingPerQuestion(questionToAnswers: Map<Question,List<String>>){
+        questionToAnswers.entries.forEach {
+            if(isRatingOnlyQuestion(it.key)){
+                val avg  =  if(it.value.size > 0 ) it.value.map{it.toInt()}.average() else 0.0
+                questionAvg.put(it.key.text,avg)
             }
         }
     }
 
-    private fun populateSurveySummaryResult(){
-        val result = SurveySummaryResult(resultCruncher.getTotalUniqueEntries(),calculateParticipationPercentage(),questionAvg)
-        result.printResult()
-    }
-
     fun displayResult(){
-        calculateAvgRatingPerQuestion()
-        populateSurveySummaryResult()
+        calculateAvgRatingPerQuestion(resultCruncher.questionToSubmittedAnswers)
+        populateSurveySummaryResult(resultCruncher.getTotalUniqueEntries())
     }
 }

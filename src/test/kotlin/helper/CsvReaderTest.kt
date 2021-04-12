@@ -27,7 +27,7 @@ class CsvReaderTest {
     @Test
     fun `GIVEN for a file with header WHEN the readfile is invoked THEN question models are created`() {
 
-        val mockQuestion = Question("a", "I like the kind of work I do.")
+        val mockQuestion = Question("ratingquestion", "I like the kind of work I do.")
         `when`(mockResultCruncher.addQuestion(listOf(mockQuestion))).thenReturn(true)
 
         val filename = Paths.get(classloader.getResource("file-with-header.csv").toURI()).toString()
@@ -58,15 +58,6 @@ class CsvReaderTest {
         Assertions.assertEquals("Empty file!", exception.message)
     }
 
-    //@Test
-    fun `GIVEN for a file with swapped headers WHEN the readfile is invoked THEN question models are created`() {
-        val psuedoQuestion = Question("a", "I like")
-        `when`(mockResultCruncher.addQuestion(listOf(psuedoQuestion))).thenReturn(true)
-
-        val filename = Paths.get(classloader.getResource("swapped-headers.csv").toURI()).toString()
-        testSubject.readFile(filename)
-        verify(mockResultCruncher).addQuestion(listOf(psuedoQuestion))
-    }
 
     @Test
     fun `GIVEN for gibberish file content WHEN the readfile is invoked THEN participants models are created`() {
