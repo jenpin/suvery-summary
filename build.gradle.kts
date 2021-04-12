@@ -79,3 +79,8 @@ val integrationTest = task<Test>("integrationTest") {
     }
 
 }
+
+dependencies {
+    intTestImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    intTestRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+}

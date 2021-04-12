@@ -25,11 +25,10 @@ class ResultCruncherTest (){
         var questionOne = Question("typeOne","textOne")
         var questionTwo = Question("typeTwo","textTwo")
 
-        testSubject.addQuestion(questionOne)
-        testSubject.addQuestion(questionTwo)
+        testSubject.addQuestion(listOf(questionOne,questionTwo))
         assertEquals(2, testSubject.getQuestions().size)
 
-        testSubject.addQuestion(questionTwo)
+        testSubject.addQuestion(listOf(questionOne,questionTwo,questionTwo))
         assertEquals(2, testSubject.getQuestions().size)
     }
 
@@ -38,12 +37,12 @@ class ResultCruncherTest (){
         var participantOne = Participant("a@b.c","1",true, arrayListOf("1","2","3"))
         var participantTwo = Participant("a@b.c","2",true, arrayListOf("1","2","3"))
 
-        testSubject.addParticipant(participantOne)
-        testSubject.addParticipant(participantTwo)
+        testSubject.addParticipant(listOf(participantOne,participantTwo))
+
         assertEquals(2, testSubject.getParticipants().size)
 
         var participantThree = Participant("a@b.c","",true, arrayListOf("1","2","3"))
-        testSubject.addParticipant(participantThree)
+        testSubject.addParticipant(listOf(participantOne,participantTwo,participantThree))
         assertEquals(3, testSubject.getParticipants().size)
     }
 
@@ -52,10 +51,8 @@ class ResultCruncherTest (){
         var participantOne = Participant("a@b.c","1",true, arrayListOf("1","2","3"))
         var participantTwo = Participant("a@b.c","1",true, arrayListOf("4","5","3"))
 
-        testSubject.addParticipant(participantOne)
-        testSubject.addParticipant(participantTwo)
+        testSubject.addParticipant(listOf(participantOne,participantTwo))
         assertEquals(2, testSubject.getParticipants().size)
-
         assertEquals(arrayListOf("1","2","3"), testSubject.getParticipants().first().answers)
     }
 
@@ -64,18 +61,12 @@ class ResultCruncherTest (){
         var questionOne = Question("typeOne","textOne")
         var questionTwo = Question("typeTwo","textTwo")
         var questionThree = Question("typeThree","textThree")
-        testSubject.addQuestion(questionOne)
-        testSubject.addQuestion(questionTwo)
-        testSubject.addQuestion(questionThree)
+        testSubject.addQuestion(listOf(questionOne,questionTwo,questionThree))
 
         var participantOne = Participant("a@b.c","1",true, arrayListOf("abc","2","xyz"))
         var participantTwo = Participant("a@b.c","2",true, arrayListOf("1","2","3"))
         var participantThree = Participant("a@b.c","3",true, arrayListOf("1","2","3"))
-
-        testSubject.addParticipant(participantOne)
-        testSubject.addParticipant(participantTwo)
-        testSubject.addParticipant(participantThree)
-
+        testSubject.addParticipant(listOf(participantOne,participantTwo,participantThree))
         testSubject.beginProcessing()
 
         assertEquals(3,testSubject.questionToSubmittedAnswers.size)
@@ -88,9 +79,7 @@ class ResultCruncherTest (){
         var participantTwo = Participant("a@b.c","2",true, arrayListOf("1","2","3"))
         var participantThree = Participant("a@b.c","3",false, arrayListOf("1","2","3"))
 
-        testSubject.addParticipant(participantOne)
-        testSubject.addParticipant(participantTwo)
-        testSubject.addParticipant(participantThree)
+        testSubject.addParticipant(listOf(participantOne,participantTwo,participantThree))
 
         assertEquals(3, testSubject.getTotalUniqueEntries())
         assertEquals(2, testSubject.getSubmittedEntries())
@@ -98,7 +87,6 @@ class ResultCruncherTest (){
 
     @Test
     fun `WHEN No questions are added THEN total entries and submitted entries can be calculated `() {
-
         assertEquals(0, testSubject.getTotalUniqueEntries())
         assertEquals(0, testSubject.getSubmittedEntries())
     }

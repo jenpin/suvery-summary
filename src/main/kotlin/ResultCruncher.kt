@@ -1,7 +1,7 @@
 import helper.SurverySummary
 import model.Participant
 import model.Question
-import java.util.LinkedHashSet
+import java.util.*
 
 object ResultCruncher {
 
@@ -13,7 +13,6 @@ object ResultCruncher {
         questions.forEach {
             questionToSubmittedAnswers.put(it, mutableListOf<String>())
         }
-
         participants.forEach {
             val answers = it.answers
             if(answers.size == questionToSubmittedAnswers.keys.size && it.hasParticipated){
@@ -24,11 +23,10 @@ object ResultCruncher {
             }
 
         }
-        println(questionToSubmittedAnswers.values)
     }
 
-    fun addQuestion(value: Question) = questions.add(value)
-    fun addParticipant(value: Participant) = participants.add(value)
+    fun addQuestion(value: List<Question>) = questions.addAll(value)
+    fun addParticipant(value: List<Participant>) = participants.addAll(value)
 
     fun getQuestions () : LinkedHashSet<Question> = questions
     fun getParticipants () :  LinkedHashSet<Participant> = participants

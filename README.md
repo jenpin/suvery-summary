@@ -13,6 +13,9 @@ An additional field ` val answers: MutableList<String> = arrayListOf() ` in `Que
 This would have saved me reparsing the answer list but I could not find a neater way 
 to do it when I was parsing the csv i.e CSVReader.populateParticipants
 
+Also I am not a fan of tying field validations in the data class itself i.e init{}block.
+Sticking to clean architecture, I feel, validation is part of the core logic and i would
+need tests to ensure the validation works.
 
 # PreRequistes
 - Gradle 5.2.1
@@ -20,9 +23,11 @@ to do it when I was parsing the csv i.e CSVReader.populateParticipants
 - Kotlin 1.3.20
 
 ## Instructions
-To Build & run Unit tests  => `./gradlew build`
+To build the application  => `./gradlew build`
 
 To run the application => `./gradlew run --args="<filename1>,<filename2>"`
+
+To run unit tests  => `./gradlew test`
 
 To run the Integration tests  => `./gradlew integrationTest`
 
@@ -39,12 +44,16 @@ the participation percentage is calculated
  - if no email or employee id is provided, however last submitted is present,
  the answers will count.
  - A single employee can have multiple entries and all are considered.
- 
+ - "Comma" , in a question is treated as a valid delimiter and the question will be split based on it.
 
   
 ## Areas to improve
  - Could use third party libraries to read csvs.
  - No validations on the type/value of input AND order of question files (what if only two columns are provided)
- - Introduce smarts in existing code to identify headers i.e header has a date or not blank
+ Scenarios for not valid values .
+ This can be handled by introducing interfaces.
+ - Adding constant file for String constants.
+ - Introduce smarts in existing code to identify headers i.e currently the if the line  has a  `@ or : or isblank` then
+ it is not a header
  - the assumption of `A single employee can have multiple entries and all are considered.` can be 
- handled by overriding `equals` in the `Participant` data class. Thought it wasnt needed for now.
+ handled by overriding `equals` in the `Participant` data class. Thought it wasn't needed for now.

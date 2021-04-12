@@ -8,32 +8,33 @@ import java.io.File
 class CsvReader (val resultCruncher: ResultCruncher) {
 
     private fun populateQuestions(lines: List<String>, header: List<String>) {
+        var questions = mutableListOf<Question>()
+
         lines.drop(1)
             .map { it.trim().split(",") }
             .map { header.zip(it).toMap() }
             .forEach {
-                println(it.get("type") + " " + it.get("text"))
-                if(it.get("type").isNullOrBlank() || it.get("text").isNullOrBlank())
-                    throw Exception ("A Question and its type is mandatory")
-
-                resultCruncher.addQuestion(Question(it.get("type")!!, it.get("text")!!))
+                questions.add(Question(it.get("type")!!,it.get("text")!!))
             }
+        QuestionValidator(questions).validate()
+        resultCruncher.addQuestion(questions)
     }
 
     private fun populateParticpants(lines: List<String>) {
+        var participants = mutableListOf<Participant>()
+
         lines.map {
             it.trim().split(",")
         }.forEach {
-            println(it.subList(3, it.size))
-            resultCruncher.addParticipant(
-                Participant(
+            participants.add(Participant(
                     it[0],
                     it[1],
                     !it[2].isNullOrBlank(),
                     it.subList(3, it.size).toMutableList()
-                )
-            )
+                ))
         }
+        ParticipantValidator(participants).validate()
+        resultCruncher.addParticipant(participants)
     }
 
     fun readFile(filename: String) {
@@ -42,7 +43,6 @@ class CsvReader (val resultCruncher: ResultCruncher) {
         if(lines.isEmpty()) throw Exception("Empty file!")
 
         val isHeader = listOf("@",":"," ").filter { it in lines[0] }.size == 0
-        println("isHeader " + isHeader)
 
         if (isHeader) {
             val header = lines[0].trim().split(",")
@@ -55,12 +55,7 @@ class CsvReader (val resultCruncher: ResultCruncher) {
 
 fun main(args: Array<String>) {
     for (arg in args) {
-        try {
             CsvReader(ResultCruncher).readFile(arg)
-        }
-        catch (e: Exception){
-            println("Something went wrong!! "+ e.message)
-        }
     }
     ResultCruncher.beginProcessing()
 }

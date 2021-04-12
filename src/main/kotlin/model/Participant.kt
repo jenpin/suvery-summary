@@ -1,7 +1,5 @@
 package model
 
-import java.util.ArrayList
-
 data class Participant (
     val email: String?,
     val id: String?,
